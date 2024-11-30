@@ -1,11 +1,15 @@
 {
-  "name": "@./source",
+  "name": "@dinoco/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "commit": "czg",
+    "prepare": "is-ci || husky install",
+    "format": "biome check --write ."
+  },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@nx/js": "20.1.4",
     "@nx/rollup": "20.1.4",
     "@swc-node/register": "~1.9.1",
@@ -13,6 +17,10 @@
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@types/node": "18.16.9",
+    "czg": "^1.11.0",
+    "husky": "^9.1.7",
+    "is-ci": "^3.0.1",
+    "nano-staged": "^0.8.0",
     "nx": "20.1.4",
     "rollup": "^4.14.0",
     "swc-loader": "0.1.15",
