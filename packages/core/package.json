@@ -20,5 +20,8 @@
       "default": "./dist/index.cjs.js"
     }
   },
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "hono": "^4.6.12"
+  }
 }
