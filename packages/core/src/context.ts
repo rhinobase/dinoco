@@ -1,10 +1,66 @@
+import type { ContextVariableMap, ExecutionContext } from "hono";
 import { HonoRequest } from "hono/request";
-import type { Input } from "hono/types";
+import type { Result } from "hono/router";
+import type {
+  BlankInput,
+  FetchEventLike,
+  H,
+  Input,
+  RouterRoute,
+} from "hono/types";
+import type { IsAny } from "hono/utils/types";
+import type { Env, NotFoundHandler } from "./types";
+
+/**
+ * Interface for getting context variables.
+ *
+ * @template E - Environment type.
+ */
+interface Get<E extends Env> {
+  <Key extends keyof E["Variables"]>(key: Key): E["Variables"][Key];
+  <Key extends keyof ContextVariableMap>(key: Key): ContextVariableMap[Key];
+}
+
+/**
+ * Interface for setting context variables.
+ *
+ * @template E - Environment type.
+ */
+interface Set<E extends Env> {
+  <Key extends keyof E["Variables"]>(
+    key: Key,
+    value: E["Variables"][Key],
+  ): void;
+  <Key extends keyof ContextVariableMap>(
+    key: Key,
+    value: ContextVariableMap[Key],
+  ): void;
+}
+
+/**
+ * Options for configuring the context.
+ *
+ * @template E - Environment type.
+ */
+type ContextOptions<E extends Env> = {
+  /**
+   * Execution context for the request.
+   */
+  executionCtx?: FetchEventLike | ExecutionContext | undefined;
+  /**
+   * Handler for not found responses.
+   */
+  notFoundHandler?: NotFoundHandler<E>;
+  matchResult?: Result<[H, RouterRoute]>;
+  path?: string;
+};
 
 export class Context<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  E extends Env = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   P extends string = any,
-  I extends Input = {}
+  I extends Input = BlankInput,
 > {
   #rawRequest: Request;
   #req: HonoRequest<P, I["out"]> | undefined;
@@ -28,10 +84,8 @@ export class Context<
   error: Error | undefined;
 
   #executionCtx: FetchEventLike | ExecutionContext | undefined;
-  #headers: Headers | undefined;
-  #preparedHeaders: Record<string, string> | undefined;
-  #layout: Layout<PropsForRenderer & { Layout: Layout }> | undefined;
-  #renderer: Renderer | undefined;
+  res: any;
+  #notFoundHandler: NotFoundHandler<E> | undefined;
 
   #matchResult: Result<[H, RouterRoute]> | undefined;
   #path: string | undefined;
@@ -46,7 +100,6 @@ export class Context<
     this.#rawRequest = req;
     if (options) {
       this.#executionCtx = options.executionCtx;
-      this.env = options.env;
       this.#notFoundHandler = options.notFoundHandler;
       this.#path = options.path;
       this.#matchResult = options.matchResult;
@@ -60,7 +113,7 @@ export class Context<
     this.#req ??= new HonoRequest(
       this.#rawRequest,
       this.#path,
-      this.#matchResult
+      this.#matchResult,
     );
     return this.#req;
   }
@@ -74,9 +127,9 @@ export class Context<
   get event(): FetchEventLike {
     if (this.#executionCtx && "respondWith" in this.#executionCtx) {
       return this.#executionCtx;
-    } else {
-      throw Error("This context has no FetchEvent");
     }
+
+    throw Error("This context has no FetchEvent");
   }
 
   /**
@@ -88,135 +141,10 @@ export class Context<
   get executionCtx(): ExecutionContext {
     if (this.#executionCtx) {
       return this.#executionCtx as ExecutionContext;
-    } else {
-      throw Error("This context has no ExecutionContext");
     }
+
+    throw Error("This context has no ExecutionContext");
   }
-
-  /**
-   * `.render()` can create a response within a layout.
-   *
-   * @see {@link https://hono.dev/docs/api/context#render-setrenderer}
-   *
-   * @example
-   * ```ts
-   * app.get('/', (c) => {
-   *   return c.render('Hello!')
-   * })
-   * ```
-   */
-  render: Renderer = (...args) => {
-    this.#renderer ??= (content: string | Promise<string>) =>
-      this.html(content);
-    return this.#renderer(...args);
-  };
-
-  /**
-   * Sets the layout for the response.
-   *
-   * @param layout - The layout to set.
-   * @returns The layout function.
-   */
-  setLayout = (
-    layout: Layout<PropsForRenderer & { Layout: Layout }>
-  ): Layout<
-    PropsForRenderer & {
-      Layout: Layout;
-    }
-  > => (this.#layout = layout);
-
-  /**
-   * Gets the current layout for the response.
-   *
-   * @returns The current layout function.
-   */
-  getLayout = (): Layout<PropsForRenderer & { Layout: Layout }> | undefined =>
-    this.#layout;
-
-  /**
-   * `.setRenderer()` can set the layout in the custom middleware.
-   *
-   * @see {@link https://hono.dev/docs/api/context#render-setrenderer}
-   *
-   * @example
-   * ```tsx
-   * app.use('*', async (c, next) => {
-   *   c.setRenderer((content) => {
-   *     return c.html(
-   *       <html>
-   *         <body>
-   *           <p>{content}</p>
-   *         </body>
-   *       </html>
-   *     )
-   *   })
-   *   await next()
-   * })
-   * ```
-   */
-  setRenderer = (renderer: Renderer): void => {
-    this.#renderer = renderer;
-  };
-
-  /**
-   * `.header()` can set headers.
-   *
-   * @see {@link https://hono.dev/docs/api/context#body}
-   *
-   * @example
-   * ```ts
-   * app.get('/welcome', (c) => {
-   *   // Set headers
-   *   c.header('X-Message', 'Hello!')
-   *   c.header('Content-Type', 'text/plain')
-   *
-   *   return c.body('Thank you for coming')
-   * })
-   * ```
-   */
-  header: SetHeaders = (name, value, options): void => {
-    // Clear the header
-    if (value === undefined) {
-      if (this.#headers) {
-        this.#headers.delete(name);
-      } else if (this.#preparedHeaders) {
-        delete this.#preparedHeaders[name.toLocaleLowerCase()];
-      }
-      if (this.finalized) {
-        this.res.headers.delete(name);
-      }
-      return;
-    }
-
-    if (options?.append) {
-      if (!this.#headers) {
-        this.#isFresh = false;
-        this.#headers = new Headers(this.#preparedHeaders);
-        this.#preparedHeaders = {};
-      }
-      this.#headers.append(name, value);
-    } else {
-      if (this.#headers) {
-        this.#headers.set(name, value);
-      } else {
-        this.#preparedHeaders ??= {};
-        this.#preparedHeaders[name.toLowerCase()] = value;
-      }
-    }
-
-    if (this.finalized) {
-      if (options?.append) {
-        this.res.headers.append(name, value);
-      } else {
-        this.res.headers.set(name, value);
-      }
-    }
-  };
-
-  status = (status: StatusCode): void => {
-    this.#isFresh = false;
-    this.#status = status;
-  };
 
   /**
    * `.set()` can set the value specified by the key.
@@ -291,4 +219,20 @@ export class Context<
     }
     return Object.fromEntries(this.#var);
   }
+
+  /**
+   * `.notFound()` can return the Not Found Response.
+   *
+   * @see {@link https://hono.dev/docs/api/context#notfound}
+   *
+   * @example
+   * ```ts
+   * app.get('/notfound', (c) => {
+   *   return c.notFound()
+   * })
+   * ```
+   */
+  notFound = (): any | Promise<any> => {
+    return this.#notFoundHandler?.(this);
+  };
 }

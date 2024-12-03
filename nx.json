@@ -33,6 +33,17 @@
   "release": {
     "version": {
       "preVersionCommand": "pnpm dlx nx run-many -t build"
-    }
+    },
+    "projects": [
+      "core"
+    ],
+    "changelog": {
+      "projectChangelogs": {
+        "renderOptions": {
+          "authors": false
+        }
+      }
+    },
+    "projectsRelationship": "independent"
   }
 }
