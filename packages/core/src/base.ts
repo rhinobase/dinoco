@@ -12,7 +12,7 @@ import type {
   Next,
   Schema,
 } from "hono/types";
-import { mergePath } from "hono/utils/url";
+import { getPath, getPathNoStrict, mergePath } from "hono/utils/url";
 import { compose } from "./compose";
 import { Context } from "./context";
 import type {
@@ -39,7 +39,17 @@ const errorHandler = (err: Error, c: Context) => {
   return "Internal Server Error";
 };
 
+type GetPath = (request: Request) => string;
+
 export type DinocoOptions = {
+  /**
+   * `strict` option specifies whether to distinguish whether the last path is a directory or not.
+   *
+   * @see {@link https://hono.dev/docs/api/hono#strict-mode}
+   *
+   * @default true
+   */
+  strict?: boolean;
   /**
    * `router` option specifies which router to use.
    *
@@ -47,10 +57,31 @@ export type DinocoOptions = {
    *
    * @example
    * ```ts
-   * const app = new Dinoco({ router: new RegExpRouter() })
+   * const app = new Hono({ router: new RegExpRouter() })
    * ```
    */
   router?: Router<[H, RouterRoute]>;
+  /**
+   * `getPath` can handle the host header value.
+   *
+   * @see {@link https://hono.dev/docs/api/routing#routing-with-host-header-value}
+   *
+   * @example
+   * ```ts
+   * const app = new Hono({
+   *  getPath: (req) =>
+   *   '/' + req.headers.get('host') + req.url.replace(/^https?:\/\/[^/]+(\/[^?]*)/, '$1'),
+   * })
+   *
+   * app.get('/www1.example.com/hello', () => c.text('hello www1'))
+   *
+   * // A following request will match the route:
+   * // new Request('http://www1.example.com/hello', {
+   * //  headers: { host: 'www1.example.com' },
+   * // })
+   * ```
+   */
+  getPath?: GetPath;
 };
 
 class Dinoco<
@@ -67,6 +98,7 @@ class Dinoco<
     To use it, inherit the class and implement router in the constructor.
   */
   router!: Router<[H, RouterRoute]>;
+  readonly getPath: GetPath;
   // Cannot use `#` because it requires visibility at JavaScript runtime.
   private _basePath = "/";
   #path = "/";
@@ -109,7 +141,11 @@ class Dinoco<
       return this as any;
     };
 
+    const strict = options.strict ?? true;
+    // biome-ignore lint/performance/noDelete: <explanation>
+    delete options.strict;
     Object.assign(this, options);
+    this.getPath = strict ? (options.getPath ?? getPath) : getPathNoStrict;
   }
 
   #clone(): Dinoco<E, S, BasePath> {
@@ -255,12 +291,13 @@ class Dinoco<
   }
 
   #dispatch(
-    path: string,
+    request: Request,
     executionCtx: ExecutionContext | FetchEventLike | undefined,
   ): R | Promise<R> {
+    const path = this.getPath(request);
     const matchResult = this.router.match("GET", path);
 
-    const c = new Context(new Request(`http://internal${path}`), {
+    const c = new Context(request, {
       path,
       // @ts-expect-error
       matchResult,
@@ -305,6 +342,8 @@ class Dinoco<
           );
         }
 
+        console.log(context.res);
+
         return context.res;
       } catch (err) {
         return this.#handleError(err, c);
@@ -323,11 +362,26 @@ class Dinoco<
    * @returns {R | Promise<R>} response of request
    *
    */
-  fetch: (path: string, executionCtx?: ExecutionContext) => R | Promise<R> = (
-    path,
-    ctx,
-  ) => {
-    return this.#dispatch(path, ctx);
+  fetch: (
+    segments?: string[],
+    searchParams?: Record<string, unknown>,
+    executionCtx?: ExecutionContext,
+  ) => R | Promise<R> = (segments, params, ctx) => {
+    let path = "http:din.oco/";
+
+    if (segments && segments.length > 0) {
+      path += segments.join("/");
+    }
+
+    if (params && Object.keys(params).length > 0) {
+      const searchParams = new URLSearchParams();
+      for (const key in params) {
+        searchParams.append(key, params[key] as string);
+      }
+      path += `?${searchParams.toString()}`;
+    }
+
+    return this.#dispatch(new Request(path), ctx);
   };
 }
 
