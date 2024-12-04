@@ -57,7 +57,7 @@ export type DinocoOptions = {
    *
    * @example
    * ```ts
-   * const app = new Hono({ router: new RegExpRouter() })
+   * const app = new Dinoco({ router: new RegExpRouter() })
    * ```
    */
   router?: Router<[H, RouterRoute]>;
@@ -68,7 +68,7 @@ export type DinocoOptions = {
    *
    * @example
    * ```ts
-   * const app = new Hono({
+   * const app = new Dinoco({
    *  getPath: (req) =>
    *   '/' + req.headers.get('host') + req.url.replace(/^https?:\/\/[^/]+(\/[^?]*)/, '$1'),
    * })
@@ -349,23 +349,22 @@ class Dinoco<
       }
     })();
   }
-
   /**
    * `.fetch()` will be entry point of your app.
    *
    * @see {@link https://hono.dev/docs/api/hono#fetch}
    *
-   * @param {Request} request - request Object of request
-   * @param {Env} Env - env Object
-   * @param {ExecutionContext} - context of execution
+   * @param {string[] | undefined} segments - requested path's segments
+   * @param {Record<string, unknown> | undefined} params - search params of the current request
+   * @param {ExecutionContext | undefined} ctx - context of execution
    * @returns {R | Promise<R>} response of request
    *
    */
-  fetch: (
+  fetch = (
     segments?: string[],
-    searchParams?: Record<string, unknown>,
-    executionCtx?: ExecutionContext,
-  ) => R | Promise<R> = (segments, params, ctx) => {
+    params?: Record<string, unknown>,
+    ctx?: ExecutionContext,
+  ): R | Promise<R> => {
     let path = "http:din.oco/";
 
     if (segments && segments.length > 0) {
