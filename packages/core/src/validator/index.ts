@@ -1,6 +1,6 @@
 /**
  * @module
- * Validator for Hono.
+ * Validator for Dinoco.
  */
 
 export { validator } from "./validator";

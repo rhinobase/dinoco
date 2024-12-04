@@ -7,6 +7,10 @@
     {
       "value": "mdl",
       "name": "middleware:           anything middleware specific"
+    },
+    {
+      "value": "exp",
+      "name": "examples:             anything examples specific"
     }
   ],
   "scopesSearchValue": true,
