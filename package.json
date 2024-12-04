@@ -41,5 +41,10 @@
         }
       }
     }
+  },
+  "dependencies": {
+    "@dinoco/zod-validator": "^0.1.1",
+    "dinoco": "^0.1.2",
+    "zod": "^3.23.8"
   }
 }
