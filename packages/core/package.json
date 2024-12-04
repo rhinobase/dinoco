@@ -32,12 +32,12 @@
     },
     "./validator": {
       "import": {
-        "default": "./index.esm.js",
-        "types": "./index.esm.d.ts"
+        "default": "./validator.esm.js",
+        "types": "./validator.esm.d.ts"
       },
       "require": {
-        "default": "./index.cjs.js",
-        "types": "./index.cjs.d.ts"
+        "default": "./validator.cjs.js",
+        "types": "./validator.cjs.d.ts"
       }
     }
   }

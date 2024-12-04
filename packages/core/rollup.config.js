@@ -7,7 +7,7 @@ module.exports = withNx(
     outputPath: "./dist",
     tsConfig: "./tsconfig.lib.json",
     compiler: "swc",
-    format: ["esm"],
+    format: ["cjs", "esm"],
     assets: [
       { input: ".", output: ".", glob: "README.md" },
       { input: ".", output: ".", glob: "packages/core/package.json" },
