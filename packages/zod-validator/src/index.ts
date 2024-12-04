@@ -39,12 +39,14 @@ export const zValidator = <
       ? {
           [K in Target]?: In extends ValidationTargets[K]
             ? In
-            : { [K2 in keyof In]?: ValidationTargets[K][K2] };
+            : // @ts-expect-error
+              { [K2 in keyof In]?: ValidationTargets[K][K2] };
         }
       : {
           [K in Target]: In extends ValidationTargets[K]
             ? In
-            : { [K2 in keyof In]: ValidationTargets[K][K2] };
+            : // @ts-expect-error
+              { [K2 in keyof In]: ValidationTargets[K][K2] };
         };
     out: { [K in Target]: Out };
   },
@@ -72,7 +74,7 @@ export const zValidator = <
     }
 
     if (!result.success) {
-      return c.json(result, 400);
+      throw result.error;
     }
 
     return result.data as z.infer<T>;

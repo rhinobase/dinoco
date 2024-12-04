@@ -75,8 +75,8 @@ importers:
   packages/zod-validator:
     dependencies:
       dinoco:
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       zod:
         specifier: ^3.19.1
         version: 3.23.8
@@ -1939,8 +1939,8 @@ packages:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
     engines: {node: '>=0.3.1'}
 
-  dinoco@0.1.1:
-    resolution: {integrity: sha512-Df8qXOakRNJWwK58uSp7WtT9LfIXWU+LEEBVEm5ng1m8nBZFSXbpM7xPSWL+fXK+xaJZvKlSQzBciSgmSO+vQQ==}
+  dinoco@0.1.2:
+    resolution: {integrity: sha512-PLe7cETgtdTV+RUEv0drICx4x/FK8KzyV4sA+hSvWo4rHZbSNlUsCjuuBwB1UE9813lUsl5XPs3+sm9/TBCsXg==}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -6168,7 +6168,7 @@ snapshots:
 
   diff@4.0.2: {}
 
-  dinoco@0.1.1:
+  dinoco@0.1.2:
     dependencies:
       hono: 4.6.12
 

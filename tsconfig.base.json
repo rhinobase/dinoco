@@ -13,11 +13,9 @@
     "importHelpers": true,
     "incremental": true,
     "isolatedModules": true,
-    "lib": [
-      "es2022"
-    ],
+    "lib": ["es2022"],
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -34,15 +32,9 @@
     "verbatimModuleSyntax": false,
     "baseUrl": ".",
     "paths": {
-      "@dinoco/zod-validator": [
-        "packages/zod-validator/src/index.ts"
-      ],
-      "dinoco": [
-        "packages/core/src/index.ts"
-      ],
-      "dinoco/validator": [
-        "packages/core/src/validator/index.ts"
-      ]
+      "@dinoco/zod-validator": ["packages/zod-validator/src/index.ts"],
+      "dinoco": ["packages/core/src/index.ts"],
+      "dinoco/validator": ["packages/core/src/validator/index.ts"]
     }
   }
 }

@@ -17,7 +17,7 @@
     "url": "https://github.com/rhinobase/dinoco/issues"
   },
   "peerDependencies": {
-    "dinoco": "^0.1.1",
+    "dinoco": "^0.1.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
