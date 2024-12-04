@@ -7,13 +7,17 @@ module.exports = withNx(
     outputPath: "./dist",
     tsConfig: "./tsconfig.lib.json",
     compiler: "swc",
-    format: ["cjs", "esm"],
+    format: ["esm"],
     assets: [
       { input: ".", output: ".", glob: "README.md" },
       { input: ".", output: ".", glob: "packages/core/package.json" },
     ],
   },
   {
+    input: {
+      index: "./src/index.ts",
+      validator: "./src/validator/index.ts",
+    },
     plugins: [terser()],
   },
 );

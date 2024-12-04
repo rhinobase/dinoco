@@ -7,8 +7,7 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "declarationMap": false,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "ESNext",
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],

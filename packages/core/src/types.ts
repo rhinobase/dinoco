@@ -1896,3 +1896,14 @@ export type ToSchema<
 }>;
 
 type AddDollar<T extends string> = `$${Lowercase<T>}`;
+
+////////////////////////////////////////
+//////                             /////
+//////      ValidationTargets      /////
+//////                             /////
+////////////////////////////////////////
+
+export type ValidationTargets<P extends string = string> = {
+  query: Record<string, string | string[]>;
+  param: Record<P, P extends `${infer _}?` ? string | undefined : string>;
+};
