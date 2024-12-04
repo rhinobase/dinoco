@@ -1,3 +1,13 @@
+## 0.1.2 (2024-12-04)
+
+### 🚀 Features
+
+- **core:** added validation middleware ([61a7118](https://github.com/rhinobase/dinoco/commit/61a7118))
+
+### 🩹 Fixes
+
+- **core:** resolved minor issues ([1a2839e](https://github.com/rhinobase/dinoco/commit/1a2839e))
+
 ## 0.1.1 (2024-12-04)
 
 ### 🩹 Fixes

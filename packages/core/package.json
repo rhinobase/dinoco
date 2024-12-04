@@ -1,7 +1,7 @@
 {
   "name": "dinoco",
   "description": "A flexible, type-safe server-side router for meta-frameworks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "keywords": ["hono", "dinoco", "next", "nuxt", "router", "framework"],
   "homepage": "https://github.com/rhinobase/dinoco",
