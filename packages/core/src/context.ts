@@ -65,8 +65,7 @@ export class Context<
   #rawRequest: Request;
   #req: HonoRequest<P, I["out"]> | undefined;
   #var: Map<unknown, unknown> | undefined;
-  // TODO: Need to figure this out
-  finalized = true;
+  finalized = false;
   /**
    * `.error` can get the error object from the middleware if the Handler throws an error.
    *

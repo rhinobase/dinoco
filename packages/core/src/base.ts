@@ -336,13 +336,12 @@ class Dinoco<
     return (async () => {
       try {
         const context = await composed(c);
+        context.finalized = true;
         if (!context.finalized) {
           throw new Error(
             "Context is not finalized. Did you forget to return a Response object or `await next()`?",
           );
         }
-
-        console.log(context.res);
 
         return context.res;
       } catch (err) {
