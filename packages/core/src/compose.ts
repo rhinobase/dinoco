@@ -23,7 +23,7 @@ interface ComposeContext {
  * @template C - The context type.
  * @template E - The environment type.
  *
- * @param {[[Function, unknown], unknown][] | [[Function]][]} middleware - An array of middleware functions and their corresponding parameters.
+ * @param {[[Function, unknown], ParamIndexMap | Params][]} middleware - An array of middleware functions and their corresponding parameters.
  * @param {ErrorHandler<E>} [onError] - An optional error handler function.
  * @param {NotFoundHandler<E>} [onNotFound] - An optional not-found handler function.
  *
