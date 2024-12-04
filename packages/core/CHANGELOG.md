@@ -1,3 +1,9 @@
+## 0.1.1 (2024-12-04)
+
+### 🩹 Fixes
+
+- **core:** resolved minor issues ([1a2839e](https://github.com/rhinobase/dinoco/commit/1a2839e))
+
 ## 0.1.0 (2024-12-03)
 
 ### 🚀 Features
