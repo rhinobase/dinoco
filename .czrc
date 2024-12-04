@@ -3,6 +3,10 @@
     {
       "value": "core",
       "name": "core:                 anything core specific"
+    },
+    {
+      "value": "mdl",
+      "name": "middleware:           anything middleware specific"
     }
   ],
   "scopesSearchValue": true,
