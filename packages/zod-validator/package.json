@@ -1,7 +1,7 @@
 {
   "name": "@dinoco/zod-validator",
   "description": "Validator middleware using Zod",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "keywords": ["dinoco", "validator", "zod"],
   "homepage": "https://github.com/rhinobase/dinoco",
@@ -24,9 +24,9 @@
     "hono": "^4.6.12"
   },
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.esm.js",
-    "default": "./dist/index.cjs.js"
+    "types": "./index.esm.d.ts",
+    "import": "./index.esm.js",
+    "default": "./index.cjs.js"
   },
-  "types": "./dist/index.d.ts"
+  "types": "./index.esm.d.ts"
 }

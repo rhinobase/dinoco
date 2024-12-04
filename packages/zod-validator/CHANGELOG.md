@@ -1,3 +1,9 @@
+## 0.1.1 (2024-12-04)
+
+### 🩹 Fixes
+
+- **mdl:** added docs and minor improvements ([fdbd37c](https://github.com/rhinobase/dinoco/commit/fdbd37c))
+
 ## 0.1.0 (2024-12-04)
 
 ### 🚀 Features
