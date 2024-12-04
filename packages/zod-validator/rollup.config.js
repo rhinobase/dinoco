@@ -9,7 +9,18 @@ module.exports = withNx(
     tsConfig: "./tsconfig.lib.json",
     compiler: "swc",
     format: ["cjs", "esm"],
-    external: Object.keys(pkg.devDependencies),
+    assets: [
+      {
+        input: "packages/zod-validator",
+        output: ".",
+        glob: "README.md",
+      },
+      {
+        input: "packages/zod-validator",
+        output: ".",
+        glob: "package.json",
+      },
+    ],
   },
   {
     plugins: [terser()],

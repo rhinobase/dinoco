@@ -3,7 +3,7 @@
   "description": "Validator middleware using Zod",
   "version": "0.1.0",
   "license": "MIT",
-  "keywords": ["hono", "openapi", "zod", "valibot", "typebox", "arktype"],
+  "keywords": ["dinoco", "validator", "zod"],
   "homepage": "https://github.com/rhinobase/dinoco",
   "publishConfig": {
     "access": "public"
